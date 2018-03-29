@@ -97,6 +97,7 @@ class VariablesStore {
     return this.entries.size;
   }
 
+  // need to create a proxy (?) to always return the same variable.
   public findClosestDeclaration(variable, file): Variable {
     let decorations = this.get(variable, file);
     if (decorations.length === 0) {

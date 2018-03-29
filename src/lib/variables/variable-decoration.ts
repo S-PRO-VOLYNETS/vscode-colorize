@@ -7,13 +7,10 @@ import {
 } from 'vscode';
 import { generateOptimalTextColor } from '../color-util';
 import Color from '../colors/color';
-import Variable from './variable';
-
-interface Observer {
-  update(args: any);
-}
+import Variable, { Observer } from './variable';
 
 class VariableDecoration implements Observer {
+  public observerId: number = null;
   private _updateCallback: Function;
   /**
    * The color variable used to generate the TextEditorDecorationType
@@ -71,10 +68,19 @@ class VariableDecoration implements Observer {
   public dispose(): void {
     // this.color = null;
     try {
-      this._decoration.dispose(); // can fail
-    } catch {}
+      this.variable.removerObserver(this);
+      this._decoration.dispose();
+    } catch (error) {}
     this.disposed = true;
   }
+  public hide(): void {
+    // this.color = null;
+    try {
+      this._decoration.dispose();
+    } catch (error) {}
+    this.disposed = true;
+  }
+
   /**
    * Generate the decoration Range (start and end position in line)
    *
