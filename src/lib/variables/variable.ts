@@ -18,14 +18,14 @@ class Observable {
     this.lastObserverId = 0;
   }
   registerObserver (observer: Observer): number {
-    const id = this.lastObserverId++;
+    const id = ++this.lastObserverId;
     observer.observerId = id;
     this.observers = this.observers.concat(observer);
     return id;
   }
   // not working properly
   removerObserver (observer: Observer) {
-    this.observers.splice(this.observers.findIndex(_ => _.observerId !== observer.observerId));
+    this.observers = this.observers.filter(_ => _.observerId !== observer.observerId);
   }
 
   notify (args: any) {
@@ -40,6 +40,8 @@ class Variable extends Observable implements IColor {
   public color: Color;
 
   public declaration: FileDeclaration;
+
+  public id: number;
 
   public constructor(name: string, color: Color, declaration: FileDeclaration) {
     super();
