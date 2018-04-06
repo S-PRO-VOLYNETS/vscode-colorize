@@ -98,7 +98,12 @@ class VariablesStore {
   }
 
   // need to create a proxy (?) to always return the same variable.
-  public findClosestDeclaration(variable, file): Variable {
+  public findDeclaration(variable: string, file: string, line: number): Variable {
+    return this.findClosestDeclaration(variable, file, line);
+  }
+
+  // need to create a proxy (?) to always return the same variable.
+  public findClosestDeclaration(variable: string, file: string, line ?: number): Variable {
     let decorations = this.get(variable, file);
     if (decorations.length === 0) {
       decorations = this.get(variable);
@@ -107,9 +112,15 @@ class VariablesStore {
       this.delete(variable);
     }
     decorations = this.filterDecorations(decorations, file);
-    decorations = decorations.sort((a, b) => a.declaration.line - b.declaration.line);
+    if (line) {
+      decorations = decorations.filter(decoration => decoration.declaration.line === line);
+    } else {
+      decorations = decorations.sort((a, b) => a.declaration.line - b.declaration.line);
+    }
+
     return decorations.pop();
   }
+
   private filterDecorations(decorations, dir) {
     const folder = dirname(dir);
     const r = new RegExp(`^${encodeURI(folder)}`);

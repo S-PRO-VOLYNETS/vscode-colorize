@@ -24,8 +24,8 @@ class CssExtractor implements IVariableStrategy {
       const varName = (match[1] || match[2]).trim();
       let color = ColorExtractor.extractOneColor(text.slice(match.index + match[0].length).trim()) || this.extractVariable(fileName, text.slice(match.index + match[0].length).trim());
       if (this.store.has(varName, fileName, line)) {
-        const decoration = this.store.get(varName, fileName, line);
-        decoration[0].update(<Color>color);
+        const decoration = this.store.findDeclaration(varName, fileName, line);
+        decoration.update(<Color>color);
       } else {
         const variable = new Variable(varName, <Color> color, {fileName, line});
         this.store.addEntry(varName, variable); // update entry?? // outside ?
@@ -43,14 +43,13 @@ class CssExtractor implements IVariableStrategy {
         let spaces = (value.match(/\s/g) || []).length;
         value = value.trim();
         if (this.store.has(varName)) {
-          let decorations = this.store.findClosestDeclaration(varName, fileName);
-          let deco = Object.create(decorations);
-          if (deco.color) {
-            deco.color = new Color(value, match.index + spaces, deco.color.rgb, deco.color.alpha);
+          let decoration = this.store.findClosestDeclaration(varName, fileName);
+          if (decoration.color) {
+            decoration.color = Object.create(new Color(varName, match.index + spaces, decoration.color.rgb, decoration.color.alpha));
           } else {
-            deco.color = new Color(value, match.index + spaces, null);
+            decoration.color = Object.create(new Color(varName, match.index + spaces, null));
           }
-          colors.push(deco);
+          colors.push(decoration);
         }
       }
       return {line, colors};
