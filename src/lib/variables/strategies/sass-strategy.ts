@@ -11,6 +11,7 @@ export const REGEXP = new RegExp(`(\\$(?:[_a-z]+[\\-_a-z\\d]*)(?!:))${REGEXP_END
 export const REGEXP_ONE = new RegExp(`^(\\$(?:[_a-z]+[\\-_a-z\\d]*)(?!:))${REGEXP_END}`, 'i');
 export const DECLARATION_REGEXP = new RegExp(`(?:(\\$(?:[_a-z]+[\\-_a-z\\d]*)\\s*):)${REGEXP_END}`, 'gi');
 
+/** @see http://sass-lang.com/documentation/Sass/Script/Functions.html */
 export const FUNCTION_REGEXP = /((?:rgb|hsl)[a]?\((.*)\))(?:$|"|'|,| |;|\)|\r|\n)/gi;
 
 class SassExtractor implements IVariableStrategy {
